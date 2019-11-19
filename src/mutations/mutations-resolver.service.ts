@@ -21,7 +21,7 @@ export class MutationsResolver {
          */
 
         const verticalMutations = this.sequencesWalker
-            .countMutations(sequencesMatrix, appConfig.repeatedSequencesToMutation, SequenceWalkerMovement.Vertical);
+            .countMutations(sequencesMatrix, appConfig.repeatedSequencesToMutation, SequenceWalkerMovement.DiagonalBack);
         this.logger.debug(`Total vertical mutations:${verticalMutations}`);
 
         return (verticalMutations) > 1;

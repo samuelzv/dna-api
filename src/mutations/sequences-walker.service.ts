@@ -94,6 +94,16 @@ export class SequencesWalkerService {
                 column = context.column;
                 break;
 
+            case SequenceWalkerMovement.DiagonalForward:
+                row = context.row + 1;
+                column = context.column + 1;
+                break;
+
+            case SequenceWalkerMovement.DiagonalBack:
+                row = context.row - 1;
+                column = context.column - 1;
+                break;
+
             default:
                 return null;
         }

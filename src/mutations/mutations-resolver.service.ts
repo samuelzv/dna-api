@@ -1,15 +1,30 @@
 import {Injectable, Logger} from '@nestjs/common';
+import * as config from 'config';
+import {SequencesWalkerService, SequenceWalkerMovement} from './sequences-walker.service';
+
+// get the app settings from the configuration file, otherwise using the default
+const appConfig = config.has('app') ? config.get('app') : { repeatedSequencesToMutation: 4 };
 
 @Injectable()
 export class MutationsResolver {
     private logger: Logger = new Logger('MutationsResolver');
-    private dnaMatrix: string[][];
+    constructor(private sequencesWalker: SequencesWalkerService) {
+    }
 
     hasMutations(dna: string[]): boolean {
-        this.dnaMatrix = this.stringToIndividualChars(dna);
-        this.logger.debug(this.dnaMatrix);
+        const sequencesMatrix = this.stringToIndividualChars(dna);
 
-        return false;
+        /*
+        const horizontalMutations = this.sequencesWalker
+            .countMutations(sequencesMatrix, appConfig.repeatedSequencesToMutation, SequenceWalkerMovement.Horizontal);
+        this.logger.debug(`Total horizontal mutations:${horizontalMutations}`);
+         */
+
+        const verticalMutations = this.sequencesWalker
+            .countMutations(sequencesMatrix, appConfig.repeatedSequencesToMutation, SequenceWalkerMovement.Vertical);
+        this.logger.debug(`Total vertical mutations:${verticalMutations}`);
+
+        return (verticalMutations) > 1;
     }
 
     /**
@@ -22,4 +37,5 @@ export class MutationsResolver {
     private stringToIndividualChars(dna: string[]): string[][] {
         return dna.map((dnaItem: string) => dnaItem.split(''));
     }
+
 }

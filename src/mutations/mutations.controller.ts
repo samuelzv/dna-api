@@ -10,7 +10,7 @@ export class MutationsController {
 
     @Post()
     createMutations(@Body() createMutationDto: CreateMutationDto) {
-        this.mutationService.hasMutations(createMutationDto.dna);
+        return this.mutationService.hasMutations(createMutationDto.dna);
     }
 
 }

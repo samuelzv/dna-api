@@ -85,23 +85,23 @@ export class SequencesWalkerService {
 
         switch (context.movementType) {
             case SequenceWalkerMovement.Horizontal:
-                row = context.row;
                 column = context.column + 1;
+                row = context.row;
                 break;
 
             case SequenceWalkerMovement.Vertical:
-                row = context.row + 1;
                 column = context.column;
+                row = context.row + 1;
                 break;
 
             case SequenceWalkerMovement.DiagonalForward:
-                row = context.row + 1;
                 column = context.column + 1;
+                row = context.row + 1;
                 break;
 
             case SequenceWalkerMovement.DiagonalBack:
-                row = context.row - 1;
                 column = context.column - 1;
+                row = context.row + 1;
                 break;
 
             default:

@@ -7,7 +7,7 @@ export enum SequenceWalkerMovement {
     DiagonalBack,
 }
 
-interface SequenceContext {
+export interface SequenceContext {
     sequencesMatrix: string[][];
     sequence: string;
     row: number;
@@ -50,11 +50,10 @@ export class SequencesWalkerService {
             });
         });
 
-
         return mutations;
     }
 
-    private walkAndCountSequence(context: SequenceContext, repeatedSequencesToMutation: number): number {
+    walkAndCountSequence(context: SequenceContext, repeatedSequencesToMutation: number): number {
         const { sequence, sequencesMatrix, row, column, movementType } = context;
         const matches = context.matches + 1;
         const neighbour = this.getNeighbourSequence(context);
@@ -79,7 +78,7 @@ export class SequencesWalkerService {
         return matches;
     }
 
-    private getNeighbourSequence(context: SequenceContext): any {
+    getNeighbourSequence(context: SequenceContext): any {
         let row = null;
         let column = null;
 

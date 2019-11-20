@@ -1,3 +1,5 @@
 app:
-  repeatedSequencesToMutation: 4
+  # Number of repeated sequences to search for
+  repeatedSequences: 4
+
 

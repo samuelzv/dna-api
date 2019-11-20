@@ -13,18 +13,20 @@ export class MutationsResolver {
 
     hasMutations(dna: string[]): boolean {
         const sequencesMatrix = this.stringToIndividualChars(dna);
+        const { repeatedSequences } = appConfig;
 
-        /*
-        const horizontalMutations = this.sequencesWalker
-            .countMutations(sequencesMatrix, appConfig.repeatedSequencesToMutation, SequenceWalkerMovement.Horizontal);
-        this.logger.debug(`Total horizontal mutations:${horizontalMutations}`);
-         */
+        const movements = [
+            SequenceWalkerMovement.Horizontal,
+            SequenceWalkerMovement.Vertical,
+            SequenceWalkerMovement.DiagonalForward,
+            SequenceWalkerMovement.DiagonalBack,
+        ];
 
-        const verticalMutations = this.sequencesWalker
-            .countMutations(sequencesMatrix, appConfig.repeatedSequencesToMutation, SequenceWalkerMovement.DiagonalBack);
-        this.logger.debug(`Total vertical mutations:${verticalMutations}`);
+        const mutations = movements.reduce((accumulator: number, current: SequenceWalkerMovement) => {
+            return accumulator > 1 ? accumulator : this.sequencesWalker.countMutations(sequencesMatrix, repeatedSequences, current);
+        }, 0);
 
-        return (verticalMutations) > 1;
+        return mutations > 1;
     }
 
     /**

@@ -23,7 +23,8 @@ export class MutationsResolver {
         ];
 
         const mutations = movements.reduce((accumulator: number, current: SequenceWalkerMovement) => {
-            return accumulator > 1 ? accumulator : this.sequencesWalker.countMutations(sequencesMatrix, repeatedSequences, current);
+            // return accumulator > 1 ? accumulator : this.sequencesWalker.countMutations(sequencesMatrix, repeatedSequences, current);
+            return accumulator > 1 ? accumulator : this.sequencesWalker.getMutations(dna, repeatedSequences, current);
         }, 0);
 
         return mutations > 1;

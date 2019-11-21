@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MutationsController } from './mutations.controller';
 import { MutationsService } from './mutations.service';
-import { MutationsResolver } from './mutations-resolver.service';
 import { SequencesWalkerService } from './sequences-walker.service';
 
 @Module({
@@ -9,7 +8,6 @@ import { SequencesWalkerService } from './sequences-walker.service';
       MutationsController,
   ],
   providers: [
-      MutationsResolver,
       MutationsService,
       SequencesWalkerService,
   ],

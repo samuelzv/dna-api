@@ -28,11 +28,11 @@ export class SequenceMatrix {
         };
     }
 
-    getNeighbourSequence(context: SequenceContext): SequenceMatrixItem {
+    getNeighbourSequence(context: SequenceContext, movementType: SequenceWalkerMovement): SequenceMatrixItem {
         let row = null;
         let column = null;
 
-        switch (context.movementType) {
+        switch (movementType) {
             case SequenceWalkerMovement.Horizontal:
                 column = context.column + 1;
                 row = context.row;

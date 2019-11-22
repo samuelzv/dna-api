@@ -13,18 +13,10 @@ export class SequencesWalkerService {
 
         const visitor =  (context: SequenceContext): number => {
             const current = matrix.getSequence(context);
-            const neighbour = matrix.getNeighbourSequence(context);
-            if (current.sequence === neighbour.sequence &&
-                matches < repeatedSequencesToMutation) {
+            const neighbour = matrix.getNeighbourSequence(context, movementType);
+            if (current.sequence === neighbour.sequence && matches < repeatedSequencesToMutation) {
                 matches += 1;
-                const nextContext: SequenceContext = {
-                    sequence: neighbour.sequence,
-                    row:  neighbour.row,
-                    column: neighbour.column,
-                    movementType: context.movementType,
-                };
-
-                return visitor(nextContext);
+                return visitor(neighbour);
             } else {
                 if (matches === repeatedSequencesToMutation) {
                     mutations += 1;
@@ -36,7 +28,7 @@ export class SequencesWalkerService {
         };
 
         matrix.walk(visitor, movementType);
-        this.logger.log(`Mutations: ${mutations}`);
+        this.logger.debug(`Mutations: ${mutations}`);
         return mutations;
     }
 }

@@ -1,38 +1,29 @@
-import {SequencesWalkerService, SequenceContext, SequenceWalkerMovement} from './sequences-walker.service';
+import { SequenceMatrix } from './sequence-matrix';
+import { SequencesWalkerService } from './sequences-walker.service';
+import { SequenceWalkerMovement } from './mutations.models';
 
 describe('SequencesWalkerService', () => {
-    let sequencesWalkerService: SequencesWalkerService;
+    const matrix = new SequenceMatrix(['ATGTGA', 'CGTGCA', 'TTATGT', 'AAAAGG', 'CCCCTA', 'TCACTG']);
+    /*
     const sequencesMatrix = [
-        ['A', 'T', 'G', 'T', 'G', 'A'],
-        ['C', 'G', 'T', 'G', 'C', 'A'],
-        ['T', 'T', 'A', 'T', 'G', 'T'],
-        ['A', 'A', 'A', 'A', 'G', 'G'],
-        ['C', 'C', 'C', 'C', 'T', 'A'],
-        ['T', 'C', 'A', 'C', 'T', 'G'],
+           0    1    2    3    4    5
+      0  ['A', 'T', 'G', 'T', 'G', 'A'],
+      1  ['C', 'G', 'T', 'G', 'C', 'A'],
+      2  ['T', 'T', 'A', 'T', 'G', 'T'],
+      3  ['A', 'A', 'A', 'A', 'G', 'G'],
+      4  ['C', 'C', 'C', 'C', 'T', 'A'],
+      5  ['T', 'C', 'A', 'C', 'T', 'G'],
     ];
-
-    beforeEach(() => {
-        sequencesWalkerService = new SequencesWalkerService();
-    });
+     */
 
     describe('getNeighbourSequence', () => {
-        let context: SequenceContext;
         beforeEach(() => {
-            context = {
-                sequencesMatrix,
-                sequence: '',
-                row: 0,
-                column: 0,
-                matches: 0,
-                movementType: SequenceWalkerMovement.Horizontal,
-            };
         });
 
         describe('Should get the correct neighbour moving horizontally', () => {
             const movementType = SequenceWalkerMovement.Horizontal;
             it('Moving horizontally within the boundaries', () => {
-                const neighbour =  sequencesWalkerService
-                    .getNeighbourSequence({...context, row: 1, column: 4, movementType});
+                const neighbour =  matrix.getNeighbourSequence({ row: 1, column: 4 }, movementType);
 
                 expect(neighbour.row).toEqual(1);
                 expect(neighbour.column).toEqual(5);
@@ -40,9 +31,7 @@ describe('SequencesWalkerService', () => {
             });
 
             it('Moving horizontally outside the boundaries', () => {
-                const neighbour =  sequencesWalkerService
-                    .getNeighbourSequence({...context, row: 1, column: 5, movementType});
-
+                const neighbour =  matrix.getNeighbourSequence({ row: 1, column: 5 }, movementType);
                 expect(neighbour.sequence).toBeNull();
             });
         });
@@ -51,8 +40,7 @@ describe('SequencesWalkerService', () => {
             const movementType = SequenceWalkerMovement.Vertical;
 
             it('Moving vertically within the boundaries', () => {
-                const neighbour =  sequencesWalkerService
-                    .getNeighbourSequence({...context, row: 4, column: 2, movementType});
+                const neighbour =  matrix.getNeighbourSequence({ row: 4, column: 2 }, movementType);
 
                 expect(neighbour.row).toEqual(5);
                 expect(neighbour.column).toEqual(2);
@@ -60,13 +48,42 @@ describe('SequencesWalkerService', () => {
             });
 
             it('Moving vertically outside the boundaries', () => {
-                const neighbour =  sequencesWalkerService
-                    .getNeighbourSequence({...context, row: 5, column: 2, movementType});
+                const neighbour =  matrix.getNeighbourSequence({ row: 5, column: 2 }, movementType);
+                expect(neighbour.sequence).toBeNull();
+            });
+        });
 
+        describe('Should get the correct neighbour moving diagonal forward', () => {
+            const movementType = SequenceWalkerMovement.DiagonalForward;
+            it('Moving diagonal forward within the boundaries', () => {
+                const neighbour =  matrix.getNeighbourSequence({ row: 3, column: 4 }, movementType);
+
+                expect(neighbour.row).toEqual(4);
+                expect(neighbour.column).toEqual(5);
+                expect(neighbour.sequence).toEqual('A');
+            });
+
+            it('Moving diagonal forward outside the boundaries', () => {
+                const neighbour =  matrix.getNeighbourSequence({ row: 2, column: 5 }, movementType);
+                expect(neighbour.sequence).toBeNull();
+            });
+        });
+
+        describe('Should get the correct neighbour moving diagonal backward', () => {
+            const movementType = SequenceWalkerMovement.DiagonalBack;
+            it('Moving diagonal backward within the boundaries', () => {
+                const neighbour =  matrix.getNeighbourSequence({ row: 1, column: 1 }, movementType);
+
+                expect(neighbour.row).toEqual(2);
+                expect(neighbour.column).toEqual(0);
+                expect(neighbour.sequence).toEqual('T');
+            });
+
+            it('Moving diagonal backward outside the boundaries', () => {
+                const neighbour =  matrix.getNeighbourSequence({ row: 2, column: 0 }, movementType);
                 expect(neighbour.sequence).toBeNull();
             });
         });
 
     });
-
 });

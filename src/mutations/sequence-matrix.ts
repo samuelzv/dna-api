@@ -64,16 +64,6 @@ export class SequenceMatrix {
         };
     }
 
-    /*
-    getNeighbourSequence(): SequenceMatrixItem {
-        return {
-            sequence: this.matrix[this.rowNeighbour] && this.matrix[this.rowNeighbour][this.columnNeighbour] || null,
-            row: this.rowNeighbour,
-            column: this.columnNeighbour,
-        };
-    }
-     */
-
     /**
      * Split out every string of the array into individual chars
      * in order to create a bi-dimensional array of strings

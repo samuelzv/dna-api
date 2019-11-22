@@ -1,6 +1,6 @@
-import { SequenceMatrix } from './sequence-matrix';
-import { SequencesWalkerService } from './sequences-walker.service';
-import { SequenceWalkerMovement } from './mutations.models';
+import {SequenceMatrix} from './sequence-matrix';
+import {SequencesWalkerService} from './sequences-walker.service';
+import {SequenceContext, SequenceMatrixItem, SequenceWalkerMovement} from './mutations.models';
 
 describe('SequencesWalkerService', () => {
     const matrix = new SequenceMatrix(['ATGTGA', 'CGTGCA', 'TTATGT', 'AAAAGG', 'CCCCTA', 'TCACTG']);
@@ -16,10 +16,24 @@ describe('SequencesWalkerService', () => {
     ];
      */
 
-    describe('getNeighbourSequence', () => {
-        beforeEach(() => {
+    describe('getSequence', () => {
+        it('Get the correct sequence item', () => {
+            const item: SequenceMatrixItem = matrix.getSequence({row: 3, column: 3});
+            expect(item.sequence).toEqual('A');
         });
+    });
 
+    describe('walk', () => {
+        it('Verifies all sequences are visited by the visitor function', () => {
+            let visited = 0;
+            matrix.walk((context: SequenceContext) => {
+                ++visited;
+            }, SequenceWalkerMovement.Horizontal);
+            expect(visited).toEqual(36);
+        });
+    });
+
+    describe('getNeighbourSequence', () => {
         describe('Should get the correct neighbour moving horizontally', () => {
             const movementType = SequenceWalkerMovement.Horizontal;
             it('Moving horizontally within the boundaries', () => {

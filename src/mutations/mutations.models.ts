@@ -10,6 +10,7 @@ export interface SequenceMatrixItem {
     row: number;
     column: number;
 }
+
 export interface SequenceContext {
     row: number;
     column: number;

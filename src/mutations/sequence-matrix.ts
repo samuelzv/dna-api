@@ -1,14 +1,23 @@
 import {SequenceContext, SequenceWalkerMovement, SequenceMatrixItem} from './mutations.models';
 
+/**
+ * Isolates the access to the sequence items and the logic to iterate over the matrix
+ */
 export class SequenceMatrix {
     private readonly matrix: string[][];
     private row: number;
     private column: number;
 
     constructor(dna: string[]) {
+        // convert to a bidimensional array
         this.matrix =  this.buildMatrix(dna) ;
     }
 
+    /**
+     * Iterate over every sequence item executing a visitor function over every visited item
+     * @param visitor
+     * @param movementType
+     */
     walk(visitor: (context: SequenceContext) => void, movementType: SequenceWalkerMovement): void {
         this.matrix.forEach((sequences: string[], row: number) => {
             this.row = row;
@@ -20,6 +29,10 @@ export class SequenceMatrix {
         });
     }
 
+    /**
+     * Get the sequence item according to the context
+     * @param context
+     */
     getSequence(context: SequenceContext): SequenceMatrixItem {
         return {
             sequence: this.matrix[context.row][context.column],
@@ -28,6 +41,11 @@ export class SequenceMatrix {
         };
     }
 
+    /**
+     * Based upon the movement type determines which is the neighbour sequence of the current sequence
+     * @param context
+     * @param movementType
+     */
     getNeighbourSequence(context: SequenceContext, movementType: SequenceWalkerMovement): SequenceMatrixItem {
         let row = null;
         let column = null;

@@ -1,8 +1,7 @@
-import {SequenceMatrix} from './sequence-matrix';
-import {SequencesWalkerService} from './sequences-walker.service';
-import {SequenceContext, SequenceMatrixItem, SequenceWalkerMovement} from './mutations.models';
+import { SequenceMatrix } from './sequence-matrix';
+import { SequenceContext, SequenceMatrixItem, SequenceWalkerMovement } from './mutations.models';
 
-describe('SequencesWalkerService', () => {
+describe('SequencesMatrix', () => {
     const matrix = new SequenceMatrix(['ATGTGA', 'CGTGCA', 'TTATGT', 'AAAAGG', 'CCCCTA', 'TCACTG']);
     /*
     const sequencesMatrix = [

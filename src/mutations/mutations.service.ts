@@ -1,13 +1,10 @@
 import {Injectable, Logger} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 
-import * as config from 'config';
 import {SequenceContext, MovementDirection} from './mutations.models';
 import {SequenceMatrix } from './sequence-matrix';
 import {MutationRepository} from './mutation.repository';
-
-// get the app settings from the configuration file
-const appConfig = config.has('app') ? config.get('app') : null;
+import {AppConfig, appConfig} from '../config/app-config';
 
 @Injectable()
 export class MutationsService {
@@ -18,23 +15,38 @@ export class MutationsService {
     }
 
     /**
-     *  Determine if the dna sequences matches the number of repeated sequences
-     *  to determine that dna has mutations
+     * Get a boolean indicating that dna has mutation
+     * Whether dna already exists in database it just returns the saved result
+     * After getting the mutation result, save this one to the database
      * @param dna
      * @param configParams
      */
-    async hasMutation(dna: string[], configParams = null): Promise<boolean> {
-        const { repeatedSequences, mutationsRequired, saveResults } = configParams || appConfig;
+    async hasMutation(dna: string[], configParams: AppConfig = null): Promise<boolean> {
+        const config: AppConfig  = configParams || appConfig;
 
         // Search for a previously registered dna
         const foundDna = await this.mutationRepository.findByDna(dna);
-
         if (foundDna) {
             // break process and return the saved result
             this.logger.debug('Taken from db');
             return foundDna.hasMutation;
         }
 
+        const hasMutationResult =  this.getMutationResult(dna, config);
+        // save results to db
+        if (config.saveResults) {
+            await this.mutationRepository.saveMutationResult(dna, hasMutationResult);
+        }
+        return hasMutationResult;
+    }
+
+    /**
+     *  Determines if the dna sequences matches the number of repeated sequences
+     *  to know that dna has mutations
+     * @param dna
+     * @param config
+     */
+    getMutationResult(dna: string[], config: AppConfig) {
         // Directions to iterate over the matrix
         const movements = [
             MovementDirection.Horizontal,
@@ -47,25 +59,21 @@ export class MutationsService {
         // we don't need walking all over the matrix, just having the required mutations stop the iteration
         // that is why having mutations required it just return the accumulator rather calling the function
         const mutations = movements.reduce((accumulator: number, current: MovementDirection) => {
-            return accumulator >= mutationsRequired ? accumulator : accumulator + this.countMutations(dna, repeatedSequences, current);
+            return accumulator >= config.mutationsRequired ?
+                accumulator :
+                accumulator + this.countMutations(dna, config.repeatedSequences, current);
         }, 0);
 
-        const hasMutationResult = mutations >= mutationsRequired;
-        // save results to db
-        if (saveResults) {
-            await this.mutationRepository.saveMutationResult(dna, hasMutationResult);
-        }
-
-        return hasMutationResult;
+        return mutations >= appConfig.mutationsRequired;
     }
 
     /**
      * Returns the number of mutations found iterating the sequence matrix heading certain direction
      * @param dna
-     * @param repeatedSequencesToMutation
+     * @param repeatedSequences
      * @param direction
      */
-    countMutations(dna: string[], repeatedSequencesToMutation: number, direction: MovementDirection): number {
+    countMutations(dna: string[], repeatedSequences: number, direction: MovementDirection): number {
         let mutations = 0;
         let matches = 1;
         const matrix = new SequenceMatrix(dna);
@@ -79,11 +87,11 @@ export class MutationsService {
         const visitor =  (context: SequenceContext): number => {
             const current = matrix.getSequence(context);
             const neighbour = matrix.getNeighbourSequence(context, direction);
-            if (current.sequence === neighbour.sequence && matches < repeatedSequencesToMutation) {
+            if (current.sequence === neighbour.sequence && matches < repeatedSequences) {
                 ++matches;
                 return visitor(neighbour);
             } else {
-                if (matches === repeatedSequencesToMutation) {
+                if (matches === repeatedSequences) {
                     mutations += 1;
                 }
                 matches = 1;

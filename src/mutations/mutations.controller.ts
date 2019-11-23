@@ -11,16 +11,20 @@ export class MutationsController {
     }
 
     @Post()
-    @HttpCode(200)
+    @HttpCode(200) // normally post request responds with 201 so we need to override that
     @UsePipes(ValidationPipe)
     @ApiOkResponse({ description: 'Mutation has been found.'})
     @ApiForbiddenResponse({ description: 'Not found mutation.'})
     @ApiOperation({ description: 'Mutation found returns 200 status code, otherwise returns 403 forbidden status' , title: 'Detects mutations over a DNA sequence sent as an array of string' })
-    createMutations(@Body() createMutationDto: CreateMutationDto) {
-        if (this.mutationService.hasMutation(createMutationDto.dna)) {
-            return { message: 'Mutation found!' }; // success
+    async createMutations(@Body() createMutationDto: CreateMutationDto) {
+        const { dna } = createMutationDto;
+        const hasMutation = await this.mutationService.hasMutation(dna);
+
+        if (!hasMutation) {
+            throw new ForbiddenException('DNA has not mutation'); // not found
         }
 
-        throw new ForbiddenException('DNA has not mutations'); // not found
+        return { message: 'Mutation found!' }; // success
+
     }
 }

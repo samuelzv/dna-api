@@ -1,15 +1,21 @@
-import { Injectable, Logger } from '@nestjs/common';
-import * as config from 'config';
+import {Injectable, Logger} from '@nestjs/common';
+import {InjectRepository} from '@nestjs/typeorm';
 
-import { SequenceContext, MovementDirection } from './mutations.models';
-import { SequenceMatrix } from './sequence-matrix';
+import * as config from 'config';
+import {SequenceContext, MovementDirection} from './mutations.models';
+import {SequenceMatrix } from './sequence-matrix';
+import {MutationRepository} from './mutation.repository';
 
 // get the app settings from the configuration file
 const appConfig = config.has('app') ? config.get('app') : null;
 
 @Injectable()
 export class MutationsService {
-    private logger: Logger = new Logger('MutationsService');
+    private logger: Logger;
+
+    constructor(@InjectRepository(MutationRepository) private mutationRepository: MutationRepository) {
+        this.logger = new Logger('MutationsService');
+    }
 
     /**
      *  Determine if the dna sequences matches the number of repetead sequences
@@ -17,8 +23,8 @@ export class MutationsService {
      * @param dna
      * @param configParams
      */
-    hasMutation(dna: string[], configParams = null): boolean {
-        const { repeatedSequences, mutationsRequired } = configParams || appConfig;
+    async hasMutation(dna: string[], configParams = null): Promise<boolean> {
+        const { repeatedSequences, mutationsRequired, saveResults } = configParams || appConfig;
 
         const movements = [
             MovementDirection.Horizontal,
@@ -33,7 +39,13 @@ export class MutationsService {
             return accumulator >= mutationsRequired ? accumulator : accumulator + this.countMutations(dna, repeatedSequences, current);
         }, 0);
 
-        return mutations >= mutationsRequired;
+        const hasMutationResult = mutations >= mutationsRequired;
+        // save results to db
+        if (saveResults) {
+            await this.mutationRepository.saveDNAResults(dna, hasMutationResult);
+        }
+
+        return hasMutationResult;
     }
 
     /**

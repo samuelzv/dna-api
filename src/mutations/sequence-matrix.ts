@@ -9,7 +9,7 @@ export class SequenceMatrix {
     private column: number;
 
     constructor(dna: string[]) {
-        // convert to a bidimensional array
+        // convert to a 2 dimension array
         this.matrix =  this.buildMatrix(dna) ;
     }
 
@@ -84,12 +84,13 @@ export class SequenceMatrix {
 
     /**
      * Split out every string of the array into individual chars
-     * in order to create a bi-dimensional array of strings
+     * in order to create a 2 dimensional array of strings
      * @param dna
      * Having an input like this: ['ABC', 'DEF']
      * it generates a matrix like this: [  ['A', 'B', 'C' ], ['D', 'E', 'F' ]
+     * @return 2 dimensional array of string
      */
-    private buildMatrix(dna: string[]): string[][] {
+    buildMatrix(dna: string[]): string[][] {
         return dna.map((dnaItem: string) => dnaItem.split(''));
     }
 

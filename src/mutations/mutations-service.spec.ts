@@ -18,14 +18,14 @@ describe('MutationsService', () => {
         mutationsService = new MutationsService();
     });
 
-    describe('hasMutations', () => {
+    describe('hasMutation', () => {
         it('Should fail because we dont have enough mutations', () => {
-            const result = mutationsService.hasMutations(dna, { repeatedSequences: 4, mutationsRequired: 10 });
+            const result = mutationsService.hasMutation(dna, { repeatedSequences: 4, mutationsRequired: 10 });
             expect(result).toEqual(false);
         });
 
         it('Should pass because have enough mutations', () => {
-            const result = mutationsService.hasMutations(dna, { repeatedSequences: 4, mutationsRequired: 5 });
+            const result = mutationsService.hasMutation(dna, { repeatedSequences: 4, mutationsRequired: 5 });
             expect(result).toEqual(true);
         });
     });

@@ -15,13 +15,12 @@ export class MutationsController {
     @UsePipes(ValidationPipe)
     @ApiOkResponse({ description: 'Mutation has been found.'})
     @ApiForbiddenResponse({ description: 'Not found mutation.'})
-    @ApiOperation({description: 'Mutation found returns 200 status code, otherwise returns 403 forbidden status' , title: 'Detects mutations over a DNA sequence sent as an array of string'})
+    @ApiOperation({ description: 'Mutation found returns 200 status code, otherwise returns 403 forbidden status' , title: 'Detects mutations over a DNA sequence sent as an array of string' })
     createMutations(@Body() createMutationDto: CreateMutationDto) {
-        if (this.mutationService.hasMutations(createMutationDto.dna)) {
+        if (this.mutationService.hasMutation(createMutationDto.dna)) {
             return { message: 'Mutation found!' }; // success
         }
 
-        throw new ForbiddenException('Not found mutation');
+        throw new ForbiddenException('DNA has not mutations'); // not found
     }
-
 }

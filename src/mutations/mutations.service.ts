@@ -17,7 +17,7 @@ export class MutationsService {
      * @param dna
      * @param configParams
      */
-    hasMutations(dna: string[], configParams = null): boolean {
+    hasMutation(dna: string[], configParams = null): boolean {
         const { repeatedSequences, mutationsRequired } = configParams || appConfig;
 
         const movements = [

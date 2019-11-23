@@ -1,4 +1,4 @@
-import {BaseEntity, Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
+import {BaseEntity, Column, Entity, Index, PrimaryGeneratedColumn} from 'typeorm';
 
 @Entity()
 export class Mutation extends BaseEntity {
@@ -6,6 +6,7 @@ export class Mutation extends BaseEntity {
     id: number;
 
     @Column({ unique: true })
+    @Index()
     dna: string; // coma separated strings
 
     @Column()

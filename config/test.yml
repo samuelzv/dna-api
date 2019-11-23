@@ -2,5 +2,6 @@ app:
   # Number of repeated sequences to search for
   repeatedSequences: 4
   mutationsRequired: 2
+  saveResults: false
 
 

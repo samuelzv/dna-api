@@ -18,7 +18,7 @@ export class MutationsService {
     }
 
     /**
-     *  Determine if the dna sequences matches the number of repetead sequences
+     *  Determine if the dna sequences matches the number of repeated sequences
      *  to determine that dna has mutations
      * @param dna
      * @param configParams
@@ -26,6 +26,16 @@ export class MutationsService {
     async hasMutation(dna: string[], configParams = null): Promise<boolean> {
         const { repeatedSequences, mutationsRequired, saveResults } = configParams || appConfig;
 
+        // Search for a previously registered dna
+        const foundDna = await this.mutationRepository.findByDna(dna);
+
+        if (foundDna) {
+            // break process and return the saved result
+            this.logger.debug('Taken from db');
+            return foundDna.hasMutation;
+        }
+
+        // Directions to iterate over the matrix
         const movements = [
             MovementDirection.Horizontal,
             MovementDirection.Vertical,
@@ -34,7 +44,8 @@ export class MutationsService {
         ];
 
         // walk the matrix iterating by the four movement directions
-        // having the required mutations stop the iteration, just return the current accumulator
+        // we don't need walking all over the matrix, just having the required mutations stop the iteration
+        // that is why having mutations required it just return the accumulator rather calling the function
         const mutations = movements.reduce((accumulator: number, current: MovementDirection) => {
             return accumulator >= mutationsRequired ? accumulator : accumulator + this.countMutations(dna, repeatedSequences, current);
         }, 0);
@@ -42,7 +53,7 @@ export class MutationsService {
         const hasMutationResult = mutations >= mutationsRequired;
         // save results to db
         if (saveResults) {
-            await this.mutationRepository.saveDNAResults(dna, hasMutationResult);
+            await this.mutationRepository.saveMutationResult(dna, hasMutationResult);
         }
 
         return hasMutationResult;

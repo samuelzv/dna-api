@@ -1,7 +1,12 @@
 app:
   # Number of repeated sequences to search for
   repeatedSequences: 4
+
+  # Getting two or more we're done
+  # (Sabrás si existe una mutación si se encuentra más de una secuencia de cuatro letras iguales)
   mutationsRequired: 2
+
+  # Persist results into database
   saveResults: false
 
 

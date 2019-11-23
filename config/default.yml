@@ -3,4 +3,10 @@ app:
   repeatedSequences: 4
   mutationsRequired: 2
 
+db:
+  type: 'mysql'
+  port: 3306
+  host: 'your-host'
+  database: 'your-database'
+  synchronize: true
 

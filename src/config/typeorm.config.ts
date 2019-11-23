@@ -8,8 +8,8 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
     host: process.env.ADN_RDS_HOSTNAME || dbConfig.host,
     port: process.env.ADN_RDS_PORT || dbConfig.port,
     database: process.env.ADN_RDS_DB_NAME || dbConfig.database,
-    username: process.env.ADN_RDS_USERNAME,
-    password: process.env.ADN_RDS_PASSWORD,
+    username: process.env.ADN_RDS_USERNAME || dbConfig.username,
+    password: process.env.ADN_RDS_PASSWORD || dbConfig.password,
     entities: [__dirname + '/../**/*.entity.{js,ts}'],
     synchronize: process.env.TYPEORM_SYNC || dbConfig.synchronize,
 };

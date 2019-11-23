@@ -21,8 +21,9 @@ export class MutationsService {
      * @param dna
      * @param configParams
      */
-    async hasMutation(dna: string[], configParams: AppConfig = null): Promise<boolean> {
-        const config: AppConfig  = configParams || appConfig;
+    async hasMutation(dna: string[], configParams: AppConfig = appConfig): Promise<boolean> {
+        const config: AppConfig  = configParams;
+        this.logger.debug(config, 'App configuration');
 
         // Search for a previously registered dna
         const foundDna = await this.mutationRepository.findByDna(dna);
@@ -101,6 +102,7 @@ export class MutationsService {
         };
 
         matrix.walk(visitor, direction);
+        this.logger.debug(`Direction: ${direction}: Mutations: ${mutations}`);
 
         return mutations;
     }

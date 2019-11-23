@@ -8,7 +8,7 @@ export class AppConfig {
     constructor(config: any) {
         this.repeatedSequences = config.repeatedSequences;
         this.mutationsRequired = config.mutationsRequired;
-        this.saveResults = config.saveResult;
+        this.saveResults = config.saveResults;
     }
 }
 

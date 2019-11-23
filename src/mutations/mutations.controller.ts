@@ -18,7 +18,7 @@ export class MutationsController {
     @ApiOperation({description: 'Mutation found returns 200 status code, otherwise returns 403 forbidden status' , title: 'Detects mutations over a DNA sequence sent as an array of string'})
     createMutations(@Body() createMutationDto: CreateMutationDto) {
         if (this.mutationService.hasMutations(createMutationDto.dna)) {
-            return { message: 'Mutation has been found' };
+            return { message: 'Mutation found!' }; // success
         }
 
         throw new ForbiddenException('Not found mutation');

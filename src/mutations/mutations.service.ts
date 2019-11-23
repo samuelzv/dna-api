@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import * as config from 'config';
 
-import { SequenceContext, SequenceWalkerMovement } from './mutations.models';
+import { SequenceContext, MovementDirection } from './mutations.models';
 import { SequenceMatrix } from './sequence-matrix';
 
 // get the app settings from the configuration file
@@ -21,15 +21,15 @@ export class MutationsService {
         const { repeatedSequences, mutationsRequired } = configParams || appConfig;
 
         const movements = [
-            SequenceWalkerMovement.Horizontal,
-            SequenceWalkerMovement.Vertical,
-            SequenceWalkerMovement.DiagonalForward,
-            SequenceWalkerMovement.DiagonalBack,
+            MovementDirection.Horizontal,
+            MovementDirection.Vertical,
+            MovementDirection.DiagonalForward,
+            MovementDirection.DiagonalBack,
         ];
 
         // walk the matrix iterating by the four movement directions
         // having the required mutations stop the iteration, just return the current accumulator
-        const mutations = movements.reduce((accumulator: number, current: SequenceWalkerMovement) => {
+        const mutations = movements.reduce((accumulator: number, current: MovementDirection) => {
             return accumulator >= mutationsRequired ? accumulator : accumulator + this.countMutations(dna, repeatedSequences, current);
         }, 0);
 
@@ -40,9 +40,9 @@ export class MutationsService {
      * Returns the number of mutations found iterating the sequence matrix heading certain direction
      * @param dna
      * @param repeatedSequencesToMutation
-     * @param movementType
+     * @param direction
      */
-    countMutations(dna: string[], repeatedSequencesToMutation: number, movementType: SequenceWalkerMovement): number {
+    countMutations(dna: string[], repeatedSequencesToMutation: number, direction: MovementDirection): number {
         let mutations = 0;
         let matches = 1;
         const matrix = new SequenceMatrix(dna);
@@ -55,7 +55,7 @@ export class MutationsService {
          */
         const visitor =  (context: SequenceContext): number => {
             const current = matrix.getSequence(context);
-            const neighbour = matrix.getNeighbourSequence(context, movementType);
+            const neighbour = matrix.getNeighbourSequence(context, direction);
             if (current.sequence === neighbour.sequence && matches < repeatedSequencesToMutation) {
                 ++matches;
                 return visitor(neighbour);
@@ -69,7 +69,7 @@ export class MutationsService {
             return matches;
         };
 
-        matrix.walk(visitor, movementType);
+        matrix.walk(visitor, direction);
 
         return mutations;
     }

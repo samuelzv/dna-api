@@ -1,11 +1,11 @@
-export enum SequenceWalkerMovement {
+export enum MovementDirection {
     Horizontal,
     Vertical,
     DiagonalForward,
     DiagonalBack,
 }
 
-export interface SequenceMatrixItem {
+export interface Sequence {
     sequence: string;
     row: number;
     column: number;

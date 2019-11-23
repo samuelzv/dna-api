@@ -1,4 +1,4 @@
-import {SequenceContext, SequenceWalkerMovement, SequenceMatrixItem} from './mutations.models';
+import {SequenceContext, MovementDirection, Sequence} from './mutations.models';
 
 /**
  * Isolates the access to the sequence items and the logic to iterate over the matrix
@@ -16,14 +16,14 @@ export class SequenceMatrix {
     /**
      * Iterate over every sequence item executing a visitor function over every visited item
      * @param visitor
-     * @param movementType
+     * @param direction
      */
-    walk(visitor: (context: SequenceContext) => void, movementType: SequenceWalkerMovement): void {
+    walk(visitor: (context: SequenceContext) => void, direction: MovementDirection): void {
         this.matrix.forEach((sequences: string[], row: number) => {
             this.row = row;
             sequences.forEach((sequence: string, column: number) => {
                 this.column = column;
-                const context = { row, column, movementType };
+                const context = { row, column, direction };
                 visitor(context);
             });
         });
@@ -33,7 +33,7 @@ export class SequenceMatrix {
      * Get the sequence item according to the context
      * @param context
      */
-    getSequence(context: SequenceContext): SequenceMatrixItem {
+    getSequence(context: SequenceContext): Sequence {
         return {
             sequence: this.matrix[context.row][context.column],
             row: context.row,
@@ -42,31 +42,31 @@ export class SequenceMatrix {
     }
 
     /**
-     * Based upon the movement type determines which is the neighbour sequence of the current sequence
+     * Based upon the direction determines which is the neighbour sequence of the current one
      * @param context
-     * @param movementType
+     * @param direction
      */
-    getNeighbourSequence(context: SequenceContext, movementType: SequenceWalkerMovement): SequenceMatrixItem {
+    getNeighbourSequence(context: SequenceContext, direction: MovementDirection): Sequence {
         let row = null;
         let column = null;
 
-        switch (movementType) {
-            case SequenceWalkerMovement.Horizontal:
+        switch (direction) {
+            case MovementDirection.Horizontal:
                 column = context.column + 1;
                 row = context.row;
                 break;
 
-            case SequenceWalkerMovement.Vertical:
+            case MovementDirection.Vertical:
                 column = context.column;
                 row = context.row + 1;
                 break;
 
-            case SequenceWalkerMovement.DiagonalForward:
+            case MovementDirection.DiagonalForward:
                 column = context.column + 1;
                 row = context.row + 1;
                 break;
 
-            case SequenceWalkerMovement.DiagonalBack:
+            case MovementDirection.DiagonalBack:
                 column = context.column - 1;
                 row = context.row + 1;
                 break;

@@ -1,4 +1,4 @@
-import {SequenceContext, SequenceMatrixItem, SequenceWalkerMovement} from './mutations.models';
+import {SequenceContext, Sequence, MovementDirection} from './mutations.models';
 import {MutationsService} from './mutations.service';
 
 describe('MutationsService', () => {
@@ -33,22 +33,22 @@ describe('MutationsService', () => {
     describe('countMutations', () => {
 
         it('Should get 2 mutations horizontally', () => {
-            const mutations = mutationsService.countMutations(dna, repeatedSequences, SequenceWalkerMovement.Horizontal);
+            const mutations = mutationsService.countMutations(dna, repeatedSequences, MovementDirection.Horizontal);
             expect(mutations).toEqual(2);
         });
 
         it('Should get 1 mutations vertically', () => {
-            const mutations = mutationsService.countMutations(dna, repeatedSequences, SequenceWalkerMovement.Vertical);
+            const mutations = mutationsService.countMutations(dna, repeatedSequences, MovementDirection.Vertical);
             expect(mutations).toEqual(1);
         });
 
         it('Should get 3 mutations diagonal forward', () => {
-            const mutations = mutationsService.countMutations(dna, repeatedSequences, SequenceWalkerMovement.DiagonalForward);
+            const mutations = mutationsService.countMutations(dna, repeatedSequences, MovementDirection.DiagonalForward);
             expect(mutations).toEqual(2);
         });
 
         it('Should get 1 mutations diagonal backward', () => {
-            const mutations = mutationsService.countMutations(dna, repeatedSequences, SequenceWalkerMovement.DiagonalBack);
+            const mutations = mutationsService.countMutations(dna, repeatedSequences, MovementDirection.DiagonalBack);
             expect(mutations).toEqual(1);
         });
 

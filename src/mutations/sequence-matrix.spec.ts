@@ -1,5 +1,5 @@
 import { SequenceMatrix } from './sequence-matrix';
-import { SequenceContext, SequenceMatrixItem, SequenceWalkerMovement } from './mutations.models';
+import { SequenceContext, Sequence, MovementDirection } from './mutations.models';
 
 describe('SequencesMatrix', () => {
     const matrix = new SequenceMatrix(['ATGTGA', 'CGTGCA', 'TTATGT', 'AAAAGG', 'CCCCTA', 'TCACTG']);
@@ -17,7 +17,7 @@ describe('SequencesMatrix', () => {
 
     describe('getSequence', () => {
         it('Get the correct sequence item', () => {
-            const item: SequenceMatrixItem = matrix.getSequence({row: 3, column: 3});
+            const item: Sequence = matrix.getSequence({row: 3, column: 3});
             expect(item.sequence).toEqual('A');
         });
     });
@@ -27,14 +27,14 @@ describe('SequencesMatrix', () => {
             let visited = 0;
             matrix.walk((context: SequenceContext) => {
                 ++visited;
-            }, SequenceWalkerMovement.Horizontal);
+            }, MovementDirection.Horizontal);
             expect(visited).toEqual(36);
         });
     });
 
     describe('getNeighbourSequence', () => {
         describe('Should get the correct neighbour moving horizontally', () => {
-            const movementType = SequenceWalkerMovement.Horizontal;
+            const movementType = MovementDirection.Horizontal;
             it('Moving horizontally within the boundaries', () => {
                 const neighbour =  matrix.getNeighbourSequence({ row: 1, column: 4 }, movementType);
 
@@ -50,7 +50,7 @@ describe('SequencesMatrix', () => {
         });
 
         describe('Should get the correct neighbour moving vertically', () => {
-            const movementType = SequenceWalkerMovement.Vertical;
+            const movementType = MovementDirection.Vertical;
 
             it('Moving vertically within the boundaries', () => {
                 const neighbour =  matrix.getNeighbourSequence({ row: 4, column: 2 }, movementType);
@@ -67,7 +67,7 @@ describe('SequencesMatrix', () => {
         });
 
         describe('Should get the correct neighbour moving diagonal forward', () => {
-            const movementType = SequenceWalkerMovement.DiagonalForward;
+            const movementType = MovementDirection.DiagonalForward;
             it('Moving diagonal forward within the boundaries', () => {
                 const neighbour =  matrix.getNeighbourSequence({ row: 3, column: 4 }, movementType);
 
@@ -83,7 +83,7 @@ describe('SequencesMatrix', () => {
         });
 
         describe('Should get the correct neighbour moving diagonal backward', () => {
-            const movementType = SequenceWalkerMovement.DiagonalBack;
+            const movementType = MovementDirection.DiagonalBack;
             it('Moving diagonal backward within the boundaries', () => {
                 const neighbour =  matrix.getNeighbourSequence({ row: 1, column: 1 }, movementType);
 

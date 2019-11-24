@@ -1,9 +1,22 @@
-import {SequenceContext, Sequence, MovementDirection} from './mutations.models';
+import {Test} from '@nestjs/testing';
+
+import {MovementDirection} from './mutations.models';
 import {MutationsService} from './mutations.service';
+import {MutationRepository} from './mutation.repository';
+import {DNAResult} from './dna-result';
+import {appConfig} from '../config/app-config';
 
 describe('MutationsService', () => {
     const dna = ['TGCTGA', 'ATAGCA', 'ATTTTG', 'AGTTAG', 'ATCCTA', 'TGAAAA'];
     let mutationsService: MutationsService;
+    let mutationRepository: MutationRepository;
+
+    // mock calls to the database
+    const mockMutationRepository = () => ({
+       findByDna: jest.fn(),
+       saveMutationResult: jest.fn(),
+    });
+
     const repeatedSequences = 4;
     /*
            0    1    2    3    4    5
@@ -14,42 +27,82 @@ describe('MutationsService', () => {
       4  ['A', 'T', 'C', 'C', 'T', 'A'],
       5  ['T', 'G', 'A', 'A', 'A', 'A'],
      */
-    beforeEach(() => {
-        mutationsService = new MutationsService();
+    beforeEach(async () => {
+        const module = await Test.createTestingModule({
+            providers: [
+                MutationsService,
+                {
+                    provide: MutationRepository,
+                    useFactory: mockMutationRepository,
+                },
+            ],
+        }).compile();
+
+        mutationsService = await module.get<MutationsService>(MutationsService);
+        // get the mocked repository version
+        mutationRepository = await module.get<MutationRepository>(MutationRepository);
     });
 
     describe('hasMutation', () => {
-        it('Should fail because we dont have enough mutations', () => {
-            const result = mutationsService.hasMutation(dna, { repeatedSequences: 4, mutationsRequired: 10 });
-            expect(result).toEqual(false);
+        it('Should verify dna exists in db', async () => {
+            await mutationsService.hasMutation(dna);
+
+            expect(mutationRepository.findByDna).toHaveBeenCalledWith(dna);
         });
 
-        it('Should pass because have enough mutations', () => {
-            const result = mutationsService.hasMutation(dna, { repeatedSequences: 4, mutationsRequired: 5 });
+        it('Whenever dna already exists in db, it should not save it again', async () => {
+            (mutationRepository.findByDna as jest.Mock<Promise<DNAResult>>).mockResolvedValue({ dna, hasMutation: true });
+            await mutationsService.hasMutation(dna);
+
+            expect(mutationRepository.saveMutationResult).not.toHaveBeenCalled();
+        });
+
+        it('Whenever dna doesnt exists in db, it should save it into db', async () => {
+            (mutationRepository.findByDna as jest.Mock<Promise<DNAResult>>).mockResolvedValue(null);
+            await mutationsService.hasMutation(dna);
+
+            expect(mutationRepository.saveMutationResult).toHaveBeenCalled();
+        });
+
+        it('Should fail because it doesnt have enough mutations', async () => {
+           (mutationRepository.findByDna as jest.Mock<Promise<DNAResult>>).mockResolvedValue(null);
+           const result = await mutationsService.hasMutation(dna, { ...appConfig, mutationsRequired: 10000 });
+
+           expect(result).toEqual(false);
+        });
+
+        it('Should pass because it has enough mutations', async () => {
+            (mutationRepository.findByDna as jest.Mock<Promise<DNAResult>>).mockResolvedValue(null);
+            const result = await mutationsService.hasMutation(dna);
+
             expect(result).toEqual(true);
         });
     });
 
     describe('countMutations', () => {
-
         it('Should get 2 mutations horizontally', () => {
-            const mutations = mutationsService.countMutations(dna, repeatedSequences, MovementDirection.Horizontal);
+            const mutations = mutationsService.countMutations(dna, appConfig.repeatedSequences, MovementDirection.Horizontal);
             expect(mutations).toEqual(2);
         });
 
         it('Should get 1 mutations vertically', () => {
-            const mutations = mutationsService.countMutations(dna, repeatedSequences, MovementDirection.Vertical);
+            const mutations = mutationsService.countMutations(dna, appConfig.repeatedSequences, MovementDirection.Vertical);
             expect(mutations).toEqual(1);
         });
 
         it('Should get 3 mutations diagonal forward', () => {
-            const mutations = mutationsService.countMutations(dna, repeatedSequences, MovementDirection.DiagonalForward);
+            const mutations = mutationsService.countMutations(dna, appConfig.repeatedSequences, MovementDirection.DiagonalForward);
             expect(mutations).toEqual(2);
         });
 
         it('Should get 1 mutations diagonal backward', () => {
-            const mutations = mutationsService.countMutations(dna, repeatedSequences, MovementDirection.DiagonalBack);
+            const mutations = mutationsService.countMutations(dna, appConfig.repeatedSequences, MovementDirection.DiagonalBack);
             expect(mutations).toEqual(1);
+        });
+
+        it('Should not get any mutation', () => {
+            const mutations = mutationsService.countMutations([], appConfig.repeatedSequences, MovementDirection.Horizontal);
+            expect(mutations).toEqual(0);
         });
 
     });

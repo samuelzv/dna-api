@@ -1,5 +1,5 @@
 import {Body, Controller, ForbiddenException, Get, HttpCode, Logger, Post, UsePipes, ValidationPipe} from '@nestjs/common';
-import {ApiForbiddenResponse, ApiOkResponse, ApiOperation, ApiUseTags} from '@nestjs/swagger';
+import {ApiBadRequestResponse, ApiForbiddenResponse, ApiOkResponse, ApiOperation, ApiUseTags} from '@nestjs/swagger';
 
 import {CreateMutationDto} from './dto/create-mutation.dto';
 import {MutationsService} from './mutations.service';
@@ -17,9 +17,10 @@ export class MutationsController {
     @UsePipes(ValidationPipe)
     @ApiOkResponse({ description: 'Mutation has been found.'})
     @ApiForbiddenResponse({ description: 'Not found mutation.'})
+    @ApiBadRequestResponse({ description: 'Invalid dna input, it should be an array of strings which containing only "ATCG" chars'})
     @ApiOperation({
         title: 'Detects mutations over a DNA sequence',
-        description: 'On mutation found returns 200 status code, otherwise returns 403 forbidden status. it only allows (ATCG) characters',
+        description: 'On mutation found returns 200 status, otherwise returns 403 forbidden status. it only allows (ATCG) chars, breaking this rule will lead to 400 bad request response',
     })
     async createMutations(@Body() createMutationDto: CreateMutationDto) {
         const { dna } = createMutationDto;

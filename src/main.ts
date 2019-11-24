@@ -8,6 +8,7 @@ async function bootstrap() {
 
   const options = new DocumentBuilder()
       .setTitle('DNA mutations API')
+      .setContactEmail('samuelzv@gmail.com')
       .setDescription('Services to detect DNA mutations')
       .setVersion('1.0')
       .setSchemes('http', 'https')

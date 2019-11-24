@@ -6,7 +6,4 @@ app:
   # (Sabrás si existe una mutación si se encuentra más de una secuencia de cuatro letras iguales)
   mutationsRequired: 2
 
-  # Persist results into database
-  saveResults: false
-
 

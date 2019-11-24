@@ -47,7 +47,7 @@ export class MutationRepository extends Repository<Mutation> {
     }
 
     /**
-     * Get statistic results counting matched mutations
+     * Get statistic results counting successful/unsuccesful mutations
      * @return Statistics
      */
     async getStatistics(): Promise<Statistics> {

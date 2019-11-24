@@ -3,12 +3,10 @@ import * as configuration from 'config';
 export class AppConfig {
     repeatedSequences: number;
     mutationsRequired: number;
-    saveResults: boolean;
 
     constructor(config: any) {
         this.repeatedSequences = config.repeatedSequences;
         this.mutationsRequired = config.mutationsRequired;
-        this.saveResults = config.saveResults;
     }
 }
 

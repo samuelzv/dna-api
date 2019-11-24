@@ -35,9 +35,8 @@ export class MutationsService {
 
         const hasMutationResult =  this.getMutationResult(dna, config);
         // save results to db
-        if (config.saveResults) {
-            await this.mutationRepository.saveMutationResult(dna, hasMutationResult);
-        }
+        await this.mutationRepository.saveMutationResult(dna, hasMutationResult);
+
         return hasMutationResult;
     }
 
@@ -114,5 +113,4 @@ export class MutationsService {
     async getStatistics(): Promise<Statistics> {
         return this.mutationRepository.getStatistics();
     }
-
-    }
+}

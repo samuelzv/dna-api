@@ -6,7 +6,7 @@ export class Mutation extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ unique: true })
+    @Column()
     dna: string; // coma separated strings
 
     @Column()

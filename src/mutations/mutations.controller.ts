@@ -1,7 +1,9 @@
 import {Body, Controller, ForbiddenException, Get, HttpCode, Logger, Post, UsePipes, ValidationPipe} from '@nestjs/common';
+import {ApiForbiddenResponse, ApiOkResponse, ApiOperation, ApiUseTags} from '@nestjs/swagger';
+
 import {CreateMutationDto} from './dto/create-mutation.dto';
 import {MutationsService} from './mutations.service';
-import {ApiForbiddenResponse, ApiOkResponse, ApiOperation, ApiUseTags} from '@nestjs/swagger';
+import {Statistics} from './mutations.models';
 
 @ApiUseTags('mutations')
 @Controller('mutations')
@@ -16,7 +18,7 @@ export class MutationsController {
     @ApiOkResponse({ description: 'Mutation has been found.'})
     @ApiForbiddenResponse({ description: 'Not found mutation.'})
     @ApiOperation({
-        title: 'Detects mutations over a DNA sequence sent as an array of string',
+        title: 'Detects mutations over a DNA sequence',
         description: 'Mutation found returns 200 status code, otherwise returns 403 forbidden status',
     })
     async createMutations(@Body() createMutationDto: CreateMutationDto) {
@@ -31,7 +33,8 @@ export class MutationsController {
     }
 
     @Get('/stats')
-    @ApiOperation({ title: 'Get mutation verification stats' })
+    @ApiOperation({ title: 'Get mutation stats results' })
+    @ApiOkResponse({ description: 'Object containing stats results.', type: Statistics })
     async getMutationStats() {
         return this.mutationService.getStatistics();
     }

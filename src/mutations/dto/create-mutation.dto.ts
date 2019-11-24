@@ -7,7 +7,7 @@ import { IsNotEmpty, IsArray } from 'class-validator';
 export class CreateMutationDto {
     @ApiModelProperty({
         description: 'Array of strings containing dna sequences',
-        example: ["ATGCGA","CAGTGC","TTATGT","AGAAGG","CCCCTA","TCACTG"]
+        example: ["ATGCGA", "CAGTGC", "TTATGT", "AGAAGG", "CCCCTA", "TCACTG"],
     })
     @IsNotEmpty()
     @IsArray()

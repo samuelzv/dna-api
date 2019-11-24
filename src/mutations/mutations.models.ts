@@ -1,3 +1,5 @@
+import {ApiModelProperty} from '@nestjs/swagger';
+
 export enum MovementDirection {
     Horizontal,
     Vertical,
@@ -16,8 +18,17 @@ export interface SequenceContext {
     column: number;
 }
 
-export interface Statistics {
+export class Statistics {
+    @ApiModelProperty({
+        description: 'Number of dna sequences evaluated having mutation',
+    })
     countMutations: number;
+    @ApiModelProperty({
+        description: 'Number of dna sequences evaluated which dont have mutation',
+    })
     countNoMutations: number;
+    @ApiModelProperty({
+        description: 'Relation between matching / not matching mutations',
+    })
     ratio: number;
 }

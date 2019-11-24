@@ -48,7 +48,7 @@ describe('MutationsController', () => {
                 .expect( HttpStatus.OK);
         });
 
-        it ('On not matched mutation throws 403 exepction', async () => {
+        it ('On not matched mutation throws 403 exception', async () => {
             (mutationsService.hasMutation as jest.Mock<Promise<boolean>>).mockResolvedValue(false);
 
             return request(server)
@@ -56,6 +56,32 @@ describe('MutationsController', () => {
                 .send({ dna: ['ACTG'] })
                 .expect( HttpStatus.FORBIDDEN);
         });
+
+        it ('Sending dna containing character different (Z) from allowed should response with 400 bad request status', async () => {
+            (mutationsService.hasMutation as jest.Mock<Promise<boolean>>).mockResolvedValue(false);
+
+            return request(server)
+                .post('/mutations')
+                .send({ dna: ['ACTZ'] })
+                .expect( HttpStatus.BAD_REQUEST);
+        });
+
+        it ('On missing dna from payload respond with 400 bad request status', async () => {
+            (mutationsService.hasMutation as jest.Mock<Promise<boolean>>).mockResolvedValue(false);
+
+            return request(server)
+                .post('/mutations')
+                .send({ missingDnaField: 'hello' })
+                .expect( HttpStatus.BAD_REQUEST);
+        });
+
+        it ('Sending dna as an array of number should respond with 400 bad request status', async () => {
+            return request(server)
+                .post('/mutations')
+                .send({ dna: [1, 2, 3, 4, 5] })
+                .expect( HttpStatus.BAD_REQUEST);
+        });
+
 
     });
 

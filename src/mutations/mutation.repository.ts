@@ -3,6 +3,7 @@ import {ConflictException, InternalServerErrorException, Logger} from '@nestjs/c
 
 import {Mutation} from './mutation.entity';
 import {DNAResult} from './dna-result';
+import {Statistics} from './mutations.models';
 
 @EntityRepository(Mutation)
 export class MutationRepository extends Repository<Mutation> {
@@ -43,5 +44,30 @@ export class MutationRepository extends Repository<Mutation> {
     async findByDna(dna: string[]): Promise<DNAResult> {
         const found = await this.findOne({ dna : dna.join(this.sequenceSeparator) });
         return found ? { dna: found.dna.split(this.sequenceSeparator), hasMutation: found.hasMutation }  : null;
+    }
+
+    /**
+     * Get statistic results counting matched mutations
+     * @return Statistics
+     */
+    async getStatistics(): Promise<Statistics> {
+        const stats = await this.createQueryBuilder('mutation')
+            .select('mutation.hasMutation', 'hasMutation')
+            .addSelect('COUNT(mutation.hasMutation)', 'counter')
+            .groupBy('mutation.hasMutation')
+            .getRawMany();
+
+        const hasMutation = stats.find((result) => result.hasMutation);
+        const hasNoMutation = stats.find((result) => !result.hasMutation);
+
+        // counter could come as string so we need cast it to integer
+        const countMutations =  +(hasMutation?.counter || 0);
+        const countNoMutations = +(hasNoMutation?.counter || 0);
+
+        return {
+            countMutations,
+            countNoMutations,
+            ratio: countNoMutations > 0 ? countMutations / countNoMutations : 0,
+        };
     }
 }

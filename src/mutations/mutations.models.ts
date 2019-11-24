@@ -15,3 +15,9 @@ export interface SequenceContext {
     row: number;
     column: number;
 }
+
+export interface Statistics {
+    countMutations: number;
+    countNoMutations: number;
+    ratio: number;
+}

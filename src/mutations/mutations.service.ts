@@ -1,7 +1,7 @@
 import {Injectable, Logger} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 
-import {SequenceContext, MovementDirection} from './mutations.models';
+import {SequenceContext, MovementDirection, Statistics} from './mutations.models';
 import {SequenceMatrix } from './sequence-matrix';
 import {MutationRepository} from './mutation.repository';
 import {AppConfig, appConfig} from '../config/app-config';
@@ -106,4 +106,13 @@ export class MutationsService {
 
         return mutations;
     }
-}
+
+    /**
+     * Get statistic results counting matched mutations
+     * @return Statistics
+     */
+    async getStatistics(): Promise<Statistics> {
+        return this.mutationRepository.getStatistics();
+    }
+
+    }

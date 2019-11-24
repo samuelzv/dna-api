@@ -1,12 +1,12 @@
-import {BaseEntity, Column, Entity, Index, PrimaryGeneratedColumn} from 'typeorm';
+import {BaseEntity, Column, Entity, Index, PrimaryGeneratedColumn, Unique} from 'typeorm';
 
 @Entity()
+@Unique(['dna'])
 export class Mutation extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column({ unique: true })
-    @Index()
     dna: string; // coma separated strings
 
     @Column()

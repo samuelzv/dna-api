@@ -1,0 +1,22 @@
+app:
+  # Number of repeated sequences to search for
+  repeatedSequences: 4
+
+  # Getting two or more we're done
+  # (Sabrás si existe una mutación si se encuentra más de una secuencia de cuatro letras iguales)
+  mutationsRequired: 2
+
+  # Persist results into database
+  saveResults: true
+
+db:
+  # Override if you don't want to add the env variables
+  # !!!!be aware this file is git tracked!!!!
+  type: 'mysql'
+  port: 3306
+  host: ''
+  database: ''
+  username: ''
+  password: ''
+  synchronize: false
+

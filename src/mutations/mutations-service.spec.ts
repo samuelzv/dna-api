@@ -125,7 +125,8 @@ describe('MutationsService', () => {
 
         it('Getting the mutation vertically we dont need iterate over the rest', async () => {
             const spy = jest.spyOn(mutationsService, 'countMutations');
-            const testDna = ['TATATATATA', 'TATATATATA', 'TATATATATA', 'TATATATATA']; // vertically matches
+            // profesor jirafales adn :)
+            const testDna = ['TATATATATA', 'TATATATATA', 'TATATATATA', 'TATATATATA']; // vertically matches,
 
             await mutationsService.getMutationResult(testDna, appConfig);
 

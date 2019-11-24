@@ -1,8 +1,8 @@
 {
   "name": "dna-api",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "DNA API",
+  "author": "Samuel Zuniga Vanoye <samuelzv@gmail.com>",
   "license": "MIT",
   "scripts": {
     "prebuild": "rimraf dist",

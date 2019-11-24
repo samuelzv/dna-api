@@ -19,7 +19,10 @@ export class MutationsController {
     @ApiForbiddenResponse({ description: 'Not found mutation.'})
     @ApiOperation({
         title: 'Detects mutations over a DNA sequence',
-        description: 'Mutation found returns 200 status code, otherwise returns 403 forbidden status',
+        description: `
+            On mutation found returns 200 status code, otherwise returns 403 forbidden status.
+            it only allows (ATCG) characters
+        `,
     })
     async createMutations(@Body() createMutationDto: CreateMutationDto) {
         const { dna } = createMutationDto;

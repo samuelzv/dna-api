@@ -57,10 +57,10 @@ export class MutationsService {
         // walk the matrix iterating by the four movement directions
         // we don't need walking all over the matrix, just having the required mutations stop the iteration
         // that is why having mutations required it just return the accumulator rather calling the function
-        const mutations = movements.reduce((accumulator: number, current: MovementDirection) => {
+        const mutations = movements.reduce((accumulator: number, movement: MovementDirection) => {
             return accumulator >= config.mutationsRequired ?
                 accumulator :
-                accumulator + this.countMutations(dna, config.repeatedSequences, current);
+                accumulator + this.countMutations(dna, config.repeatedSequences, movement);
         }, 0);
 
         return mutations >= config.mutationsRequired;

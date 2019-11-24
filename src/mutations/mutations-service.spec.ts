@@ -107,4 +107,35 @@ describe('MutationsService', () => {
 
     });
 
+    describe('getMutationResult', () => {
+        it('Getting the mutation horizontally we dont need iterate over the rest', async () => {
+            const spy = jest.spyOn(mutationsService, 'countMutations');
+            const testDna = ['TTTTACCCCG', 'ATATATATAT']; // horizontally matches
+
+            await mutationsService.getMutationResult(testDna, appConfig);
+
+            // it should call it horizontally
+            expect(spy).toHaveBeenCalledWith(testDna, appConfig.repeatedSequences, MovementDirection.Horizontal);
+
+            // but not for the other ones
+            expect(spy).not.toHaveBeenCalledWith(testDna, appConfig.repeatedSequences, MovementDirection.Vertical);
+            expect(spy).not.toHaveBeenCalledWith(testDna, appConfig.repeatedSequences, MovementDirection.DiagonalForward);
+            expect(spy).not.toHaveBeenCalledWith(testDna, appConfig.repeatedSequences, MovementDirection.DiagonalBack);
+        });
+
+        it('Getting the mutation vertically we dont need iterate over the rest', async () => {
+            const spy = jest.spyOn(mutationsService, 'countMutations');
+            const testDna = ['TATATATATA', 'TATATATATA', 'TATATATATA', 'TATATATATA']; // vertically matches
+
+            await mutationsService.getMutationResult(testDna, appConfig);
+
+            // it should call it horizontally and vertically
+            expect(spy).toHaveBeenCalledWith(testDna, appConfig.repeatedSequences, MovementDirection.Horizontal);
+            expect(spy).toHaveBeenCalledWith(testDna, appConfig.repeatedSequences, MovementDirection.Vertical);
+
+            // but not for the other ones
+            expect(spy).not.toHaveBeenCalledWith(testDna, appConfig.repeatedSequences, MovementDirection.DiagonalForward);
+            expect(spy).not.toHaveBeenCalledWith(testDna, appConfig.repeatedSequences, MovementDirection.DiagonalBack);
+        });
+    });
 });

@@ -23,17 +23,16 @@ export class MutationsService {
      */
     async hasMutation(dna: string[], configParams: AppConfig = appConfig): Promise<boolean> {
         const config: AppConfig  = configParams;
-        this.logger.debug(config, 'App configuration');
 
         // Search for a previously registered dna
         const foundDna = await this.mutationRepository.findByDna(dna);
         if (foundDna) {
             // break process and return the saved result
-            this.logger.debug('Taken from db');
             return foundDna.hasMutation;
         }
 
         const hasMutationResult =  this.getMutationResult(dna, config);
+
         // save results to db
         await this.mutationRepository.saveMutationResult(dna, hasMutationResult);
 
@@ -64,7 +63,7 @@ export class MutationsService {
                 accumulator + this.countMutations(dna, config.repeatedSequences, current);
         }, 0);
 
-        return mutations >= appConfig.mutationsRequired;
+        return mutations >= config.mutationsRequired;
     }
 
     /**
@@ -101,7 +100,7 @@ export class MutationsService {
         };
 
         matrix.walk(visitor, direction);
-        this.logger.debug(`Direction: ${direction}: Mutations: ${mutations}`);
+        this.logger.log(`Direction: ${direction}: Mutations: ${mutations}`);
 
         return mutations;
     }

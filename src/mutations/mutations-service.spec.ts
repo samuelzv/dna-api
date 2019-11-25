@@ -17,16 +17,6 @@ describe('MutationsService', () => {
        saveMutationResult: jest.fn(),
     });
 
-    const repeatedSequences = 4;
-    /*
-           0    1    2    3    4    5
-      0  ['T', 'G', 'C', 'T', 'G', 'A'],
-      1  ['A', 'T', 'A', 'G', 'C', 'A'],
-      2  ['A', 'T', 'T', 'T', 'T', 'G'],
-      3  ['A', 'G', 'T', 'T', 'A', 'G'],
-      4  ['A', 'T', 'C', 'C', 'T', 'A'],
-      5  ['T', 'G', 'A', 'A', 'A', 'A'],
-     */
     beforeEach(async () => {
         const module = await Test.createTestingModule({
             providers: [

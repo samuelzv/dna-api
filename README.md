@@ -5,7 +5,7 @@ Implement an API to detect DNA mutations.
 Mutation is detected if more than one sequence of four repeated letters is found either, horizontally, vertically or diagonally (forward/back).
 
 Getting a mutation the process should return an http 200 status code, otherwise a 403 forbidden status.
-The letters allowed to represent the ADN sequences are (A,T,C,G).
+Letters allowed to represent ADN sequences are (A,T,C,G).
 
 Expose an extra service “/ stats” that returns a JSON with the DNA verification statistics: {“count_mutations”: 40, “count_no_mutation”: 100: “ratio”: 0.4}
 
@@ -42,7 +42,7 @@ $ npm run test:cov
 https://challenge-dna-api.herokuapp.com/api/
 
 
-##Author
+## Author
 [Samuel Zuniga Vanoye](mailto:samuelzv@gmail.com)
 
 ## License

@@ -16,6 +16,28 @@ Expose an extra service “/ stats” that returns a JSON with the DNA verificat
 $ npm install
 ```
 
+## Setup env variables
+
+Setup the following env variables:
+
+```bash
+
+export ADN_RDS_TYPE='mysql'
+
+export ADN_RDS_HOSTNAME='your-host'
+
+export ADN_RDS_PORT=3306
+
+export ADN_RDS_DB_NAME='your-database-name'
+
+export ADN_RDS_USERNAME='your-username'
+
+export ADN_RDS_PASSWORD='your-password'
+
+export ADN_TYPEORM_SYNC='true'
+
+```
+
 ## Running the app
 
 ```bash
